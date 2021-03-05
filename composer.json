@@ -1,0 +1,30 @@
+{
+    "name": "reactificate/reactificate",
+    "description": "Reactificator",
+    "type": "project",
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.80"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ahmard",
+            "email": "ahmard06@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "reactificate/http": "dev-master",
+        "reactificate/websocket": "dev-master",
+        "ahmard/quick-route": "^3.2",
+        "symfony/var-dumper": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "scripts": {
+        "analyse": "phpstan analyse"
+    }
+}
