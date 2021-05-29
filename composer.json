@@ -15,9 +15,9 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "reactificate/http": "dev-master",
-        "reactificate/websocket": "dev-master",
         "ahmard/quick-route": "^3.2",
-        "symfony/var-dumper": "^5.2"
+        "symfony/var-dumper": "^5.2",
+        "reactificate/websocket": "^0.0.1"
     },
     "autoload": {
         "psr-4": {
@@ -26,5 +26,10 @@
     },
     "scripts": {
         "analyse": "phpstan analyse"
+    },
+    "config": {
+        "platform": {
+            "PHP": "7.4"
+        }
     }
 }

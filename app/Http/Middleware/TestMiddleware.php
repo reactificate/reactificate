@@ -16,6 +16,7 @@ class TestMiddleware implements MiddlewareInterface
      */
     public function run(Middleware $middleware, ResponseInterface $response): void
     {
-
+        $response->html('Passed through by \App\Http\Middleware\TestMiddleware<br/>');
+        $middleware->next();
     }
 }

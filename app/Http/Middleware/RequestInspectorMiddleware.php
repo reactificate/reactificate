@@ -16,7 +16,6 @@ class RequestInspectorMiddleware implements MiddlewareInterface
      */
     public function run(Middleware $middleware, ResponseInterface $response): void
     {
-        $response->end('Hello');
         $middleware->next();
     }
 }

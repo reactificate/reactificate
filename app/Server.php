@@ -85,16 +85,14 @@ class Server
         $websocketHandlers = $handlers['handler.websocket'];
 
         $middleware = (new Middleware());
-        $middleware->handler(...$httpHandlers);
 
-        foreach ($websocketHandlers as $wsHandler) {
-            $reactMiddlewares[] = new WebSocketMiddleware(
-                [$wsHandler->getServerInfo()->getInfo()],
-                new WSMiddleware($wsHandler)
-            );
-        }
+        $reactMiddlewares = array_merge(
+            $reactMiddlewares,
+            WSMiddleware::create(...$websocketHandlers)
+        );
 
         //add http handlers
+        $middleware->handler(...$httpHandlers);
         $reactMiddlewares[] = $middleware;
 
         if (!isset($this->httpServer)) {

@@ -21,6 +21,17 @@ class MainController
     }
 
     /**
+     * Webpage chat
+     *
+     * @param ResponseInterface $response
+     * @throws JsonException
+     */
+    public function chat(ResponseInterface $response): void
+    {
+        $response->view('chat.php')->end();
+    }
+
+    /**
      * API end-point test
      *
      * @param ResponseInterface $response

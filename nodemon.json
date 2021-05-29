@@ -3,7 +3,6 @@
     "ignore": [
         ".git",
         ".idea",
-        "./vendor",
         "./resources/views"
     ],
     "execMap": {

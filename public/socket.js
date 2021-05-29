@@ -89,19 +89,19 @@ Reactificate.WSClient = (function () {
             websocket = new WebSocket(wsUri, options);
 
             websocket.addEventListener('open', function (...arguments) {
-                changeState('open', ...arguments);
+                changeState('open', arguments);
             });
 
             websocket.addEventListener('message', function (...arguments) {
-                _event.dispatch('message', ...arguments);
+                _event.dispatch('message', arguments);
             });
 
             websocket.addEventListener('close', function (...arguments) {
-                changeState('close', ...arguments);
+                changeState('close', arguments);
             });
 
             websocket.addEventListener('error', function (...arguments) {
-                changeState('error', ...arguments);
+                changeState('error', arguments);
             });
         };
 
@@ -197,6 +197,7 @@ Reactificate.WSClient = (function () {
          * Send message to websocket server
          * @param command {string} command name
          * @param message {array|object|int|float|string} message
+         * @return Promise
          */
         this.send = function (command, message = {}) {
             if ('object' === typeof command) {  //when array|object is passed to command
@@ -214,13 +215,30 @@ Reactificate.WSClient = (function () {
                 });
             }
 
-            //Only send message when client is connected
-            if (this.isOpened()) {
-                websocket.send(command);
-            } else {
-                log('Your message will be sent when server connection is recovered!');
-                _event.once('open', () => websocket.send(command));
-            }
+            //Send message
+            return new Promise((resolve, reject) => {
+                //Only send message when client is connected
+                if (this.isOpened()) {
+                    try {
+                        websocket.send(command);
+                        resolve(_this);
+                    } catch (error) {
+                        reject(error);
+                    }
+
+                    //Send message when connection is recovered
+                } else {
+                    log('Your message will be sent when server connection is recovered!');
+                    _event.once('open', () => {
+                        try {
+                            websocket.send(command);
+                            resolve(_this);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    });
+                }
+            })
         };
 
         /**
@@ -248,7 +266,7 @@ Reactificate.WSClient = (function () {
 
         //CREATE SOCKET CONNECTION WHEN DOM FINISHED LOADING
         _this.onReady(function () {
-            createSocket();
+            setTimeout(() => createSocket(), 100);
             //Notification handler
             _this.onMessage(function (payload) {
                 payload = JSON.parse(payload.data);
@@ -257,7 +275,7 @@ Reactificate.WSClient = (function () {
                     //Dispatch command events
                     _event.dispatch('command', [payload]);
 
-                    if ('Reactificate.notification' === payload.command) {
+                    if ('reactificate.notification' === payload.command) {
                         let notif = new Reactificate.Notification();
                         notif.send({
                             title: payload.data.title,
