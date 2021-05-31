@@ -59,7 +59,7 @@ Reactificate.WSClient = (function () {
         let _event = new Reactificate.EventEmitter();
         /**@returns WebSocket**/
         let websocket;
-        let reconnectionInterval = 100;
+        let reconnectionInterval = 1000;
         let connectionState = 'standby';
         let willReconnect = true;
 
@@ -89,6 +89,10 @@ Reactificate.WSClient = (function () {
             websocket = new WebSocket(wsUri, options);
 
             websocket.addEventListener('open', function (...arguments) {
+                if ('reconnecting' === connectionState) {
+                    _event.dispatch('reconnect');
+                }
+
                 changeState('open', arguments);
             });
 
@@ -180,6 +184,13 @@ Reactificate.WSClient = (function () {
          * @param listener
          */
         this.onReconnecting = (listener) => _event.on('reconnecting', listener);
+
+        /**
+         * This event fires when this reconnection has been reconnected
+         * @param listener
+         */
+        this.onReconnect = (listener) => _event.on('reconnect', listener);
+
 
         this.onReady = function (listener) {
             window.addEventListener('DOMContentLoaded', listener)
